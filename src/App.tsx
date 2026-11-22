@@ -83,11 +83,16 @@ function App() {
   })
 
   return (
-    <>
-      <section className="app">
+    <main className="app">
+      <header className="app-header">
         <h1>Network Contacts</h1>
+        <p className="subtitle">
+          {contacts.length} {contacts.length === 1 ? 'contact' : 'contacts'} saved
+        </p>
+      </header>
 
-        <form className="contact-form" onSubmit={handleSubmit}>
+      <form className="contact-form" onSubmit={handleSubmit}>
+        <div className="form-row">
           <input
             type="text"
             placeholder="Name"
@@ -100,50 +105,74 @@ function App() {
             value={lastName}
             onChange={(e) => setLastName(e.target.value)}
           />
+        </div>
+        <div className="form-row">
           <input
             type="tel"
-            placeholder="Number"
+            placeholder="Phone number"
             value={number}
             onChange={(e) => setNumber(e.target.value)}
           />
-          <button type="submit">{editingId ? 'Update' : 'Add'}</button>
-          {editingId && (
-            <button type="button" onClick={resetForm}>
-              Cancel
-            </button>
-          )}
-        </form>
-
-        <input
-          className="search"
-          type="text"
-          placeholder="Search contacts..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
-
-        {filteredContacts.length === 0 ? (
-          <p className="empty">No contacts yet.</p>
-        ) : (
-          <ul className="contact-list">
-            {filteredContacts.map((contact) => (
-              <li key={contact.id} className="contact-item">
-                <div className="contact-info">
-                  <strong>
-                    {contact.name} {contact.lastName}
-                  </strong>
-                  <span>{contact.number}</span>
-                </div>
-                <div className="contact-actions">
-                  <button onClick={() => handleEdit(contact)}>Edit</button>
-                  <button onClick={() => handleDelete(contact.id)}>Delete</button>
-                </div>
-              </li>
-            ))}
-          </ul>
+          <button type="submit" className="btn btn-primary">
+            {editingId ? 'Update' : 'Add contact'}
+          </button>
+        </div>
+        {editingId && (
+          <button type="button" className="btn btn-ghost" onClick={resetForm}>
+            Cancel edit
+          </button>
         )}
-      </section>
-    </>
+      </form>
+
+      <input
+        className="search"
+        type="text"
+        placeholder="🔍  Search contacts..."
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+      />
+
+      {filteredContacts.length === 0 ? (
+        <p className="empty">
+          {contacts.length === 0 ? 'No contacts yet. Add your first one above 👆' : 'No matches found.'}
+        </p>
+      ) : (
+        <ul className="contact-list">
+          {filteredContacts.map((contact) => (
+            <li key={contact.id} className="contact-item">
+              <div className="avatar">
+                {contact.name.charAt(0).toUpperCase()}
+                {contact.lastName.charAt(0).toUpperCase()}
+              </div>
+              <div className="contact-info">
+                <strong>
+                  {contact.name} {contact.lastName}
+                </strong>
+                <span>{contact.number}</span>
+              </div>
+              <div className="contact-actions">
+                <button
+                  className="icon-btn"
+                  onClick={() => handleEdit(contact)}
+                  aria-label="Edit"
+                  title="Edit"
+                >
+                  ✏️
+                </button>
+                <button
+                  className="icon-btn danger"
+                  onClick={() => handleDelete(contact.id)}
+                  aria-label="Delete"
+                  title="Delete"
+                >
+                  🗑️
+                </button>
+              </div>
+            </li>
+          ))}
+        </ul>
+      )}
+    </main>
   )
 }
 
