@@ -1,8 +1,8 @@
 {
   "name": "network-list",
   "homepage": "https://pdcode1.github.io/network-list",
-  "private": true,
-  "version": "0.0.0",
+  "private": false,
+  "version": "1.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
