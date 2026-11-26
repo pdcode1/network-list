@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react'
-import * as XLSX from 'xlsx'
 import jsPDF from 'jspdf'
 import autoTable from 'jspdf-autotable'
 import './App.css'
@@ -133,13 +132,6 @@ function App() {
     downloadAnchorNode.remove()
   }
 
-  const exportXLS = () => {
-    const ws = XLSX.utils.json_to_sheet(contacts)
-    const wb = XLSX.utils.book_new()
-    XLSX.utils.book_append_sheet(wb, ws, "Contatos")
-    XLSX.writeFile(wb, "contacts.xlsx")
-  }
-
   const exportPDF = () => {
     const doc = new jsPDF()
     const tableData = contacts.map(c => [c.name, c.lastName, c.nickname || '-', c.number])
@@ -184,6 +176,21 @@ function App() {
         </p>
       </header>
 
+      {/* Controles: Busca e Exportação */}
+      <div className="controls">
+        <input
+          className="search"
+          type="text"
+          placeholder="🔍  Buscar por nome, apelido ou número..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
+        <div className="export-group">
+          <button className="btn btn-outline" onClick={exportJSON}>JSON</button>
+          <button className="btn btn-outline" onClick={exportPDF}>PDF</button>
+        </div>
+      </div>
+
       {/* Formulário de Adição */}
       <form className="contact-form" onSubmit={handleSubmit}>
         <div className="form-row">
@@ -197,22 +204,6 @@ function App() {
         <button type="submit" className="btn btn-primary">Adicionar contato</button>
       </form>
 
-      {/* Controles: Busca e Exportação */}
-      <div className="controls">
-        <input
-          className="search"
-          type="text"
-          placeholder="🔍  Buscar por nome, apelido ou número..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
-        <div className="export-group">
-          <button className="btn btn-outline" onClick={exportJSON}>JSON</button>
-          <button className="btn btn-outline" onClick={exportXLS}>XLS</button>
-          <button className="btn btn-outline" onClick={exportPDF}>PDF</button>
-        </div>
-      </div>
-
       {/* Lista de Contatos */}
       {paginatedContacts.length === 0 ? (
         <p className="empty">
@@ -220,7 +211,9 @@ function App() {
         </p>
       ) : (
         <ul className="contact-list">
-          {paginatedContacts.map((contact) => (
+          {paginatedContacts
+          .sort((a, b) => a.name.localeCompare(b.name))
+          .map((contact) => (
             <li key={contact.id} className="contact-item">
               <div className="avatar">
                 {contact.name.charAt(0).toUpperCase()}
